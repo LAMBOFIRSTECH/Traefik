@@ -1,0 +1,28 @@
+[http]
+  [http.services]
+    [http.services.usecase_service.loadBalancer]
+      [[http.services.usecase_service.loadBalancer.servers]]
+        url = "http://localhost:8081"
+      [[http.services.usecase_service.loadBalancer.servers]]
+        url = "http://localhost:8085"
+
+  [http.routers]
+    [http.routers.to-usecase_service]
+      entryPoints = ["usecase"]
+      service = "usecase_service"
+      middlewares = ["remove-cookies","users-authentification"]
+      rule = "PathPrefix(`/`)"
+
+  [http.middlewares]
+    [http.middlewares.users-authentification.basicAuth]
+      users = [
+        "toto:$2y$05$Vo8GP7S9JdznEhzlaiphPefTEylFJ5D1ufyLMWnkycnnSSsEJRMB2",
+        "test:$2y$05$.vT0eSkn2JjCWlJYEQyF3e6j6R.xmts9ZBZLAIc6T2TjNI79.kLam",
+      ]
+    [http.middlewares.remove-cookies.headers]
+      [http.middlewares.remove-cookies.headers.customResponseHeaders]
+        Set-Cookie = "cookie_name=deleted; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+
+
+#toto:password$1
+#test:test$1

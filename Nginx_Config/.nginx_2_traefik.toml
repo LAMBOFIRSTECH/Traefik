@@ -1,0 +1,11 @@
+[http.services]
+  [http.services.apache_service.loadBalancer]
+    [[http.services.apache_service.loadBalancer.servers]]
+      url = "http://localhost:8083"
+
+[http.routers]
+  [http.routers.to-apache_service]
+    entryPoints = ["apache"]
+    service = "apache_service"
+    rule = "PathPrefix(`/www/`)"
+
